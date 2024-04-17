@@ -1,18 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const app = express()
+const Connection = require('./connection.js')
+const productSchema = require('./model.js');
+const dotenv = require('dotenv');
 
-const productSchema = new mongoose.Schema({
-    name: {
-        type:String
-    }
-});
+const app = express();
 
 app.use(express.json())
+dotenv.config();
 
-// app.get('/', (req, res) => {
-//     res.send("hello from Node api");
-// });
+app.get('/', (req, res) => {
+    res.send("hello from Node api");
+});
 
 //CREATE API
 app.post("/api/products", async (req, res) => {
@@ -67,17 +66,12 @@ app.delete("/api/product/:id", async (req, res) => {
     }
 });
 
+const username = process.env.DB_USERNAME;
+const password = process.env.DB_PASSWORD;
 
+Connection(username, password);
 
-mongoose.connect("mongodb+srv://vidhijain2704:vidhi@cluster0.ohim8ll.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0").then(() => {
-    console.log("connected with mongodb !")
-}).catch(() => {
-    console.log("Failed !")
-})
-
-
-const Product = mongoose.model("Product", productSchema);
-
+const Product = mongoose.model("Product", productSchema)
 
 app.listen(3000, () => {
     console.log('server is running on port 3000');
